@@ -1,34 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Полис ипотечного страхования</title>
+  <title>Заполнение полиса ипотечного страхования</title>
 </head>
 <body>
   <h1>Заполнение полиса ипотечного страхования</h1>
-  <form action="/submit-policy" method="post">
-    <label for="name">Имя заемщика:</label>
+  <form id="policy-form">
+    <label for="name">ФИО:</label>
     <input type="text" id="name" name="name" required>
     <br>
-    <label for="surname">Фамилия заемщика:</label>
-    <input type="text" id="surname" name="surname" required>
+    <label for="passport">Паспортные данные:</label>
+    <input type="text" id="passport" name="passport" required>
     <br>
-    <label for="patronymic">Отчество заемщика:</label>
-    <input type="text" id="patronymic" name="patronymic">
+    <label for="address">Адрес объекта:</label>
+    <input type="text" id="address" name="address" required>
     <br>
-    <label for="birthdate">Дата рождения заемщика:</label>
-    <input type="date" id="birthdate" name="birthdate" required>
+    <label for="mortgage_amount">Оставшаяся сумма ипотеки:</label>
+    <input type="number" id="mortgage_amount" name="mortgage_amount" required>
     <br>
-    <label for="policy_number">Номер полиса:</label>
-    <input type="text" id="policy_number" name="policy_number" required>
+    <label for="property_type">Тип жилья:</label>
+    <select id="property_type" name="property_type" required>
+      <option value="квартира">Квартира</option>
+      <option value="дом">Дом</option>
+    </select>
     <br>
-    <label for="policy_amount">Сумма страхования:</label>
-    <input type="number" id="policy_amount" name="policy_amount" required>
+    <label for="gender">Пол страхователя:</label>
+    <select id="gender" name="gender" required>
+      <option value="мужчина">Мужчина</option>
+      <option value="женщина">Женщина</option>
+    </select>
     <br>
-    <label for="term">Срок страхования:</label>
-    <input type="number" id="term" name="term" required>
-    <br>
-    <input type="submit" value="Заполнить">
+    <input type="submit" value="Заполнить полис">
   </form>
+
+  <script>
+    const form = document.getElementById('policy-form');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+
+      fetch('submit_policy.php', {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Перенаправить пользователя на страницу подтверждения
+          window.location.href = 'confirmation.php';
+        } else {
+          // Вывести сообщение об ошибке
+          alert(data.error);
+        }
+      })
+      .catch(error => {
+        // Вывести сообщение об ошибке
+        alert(error);
+      });
+    });
+  </script>
 </body>
 </html>
