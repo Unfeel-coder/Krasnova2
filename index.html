@@ -1,65 +1,177 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Заполнение полиса ипотечного страхования</title>
+  <meta charset="UTF-8">
+  <title>Полис ипотечного страхования</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Заполнение полиса ипотечного страхования</h1>
-  <form id="policy-form">
-    <label for="name">ФИО:</label>
-    <input type="text" id="name" name="name" required>
-    <br>
-    <label for="passport">Паспортные данные:</label>
-    <input type="text" id="passport" name="passport" required>
-    <br>
-    <label for="address">Адрес объекта:</label>
-    <input type="text" id="address" name="address" required>
-    <br>
-    <label for="mortgage_amount">Оставшаяся сумма ипотеки:</label>
-    <input type="number" id="mortgage_amount" name="mortgage_amount" required>
-    <br>
-    <label for="property_type">Тип жилья:</label>
-    <select id="property_type" name="property_type" required>
-      <option value="квартира">Квартира</option>
-      <option value="дом">Дом</option>
-    </select>
-    <br>
-    <label for="gender">Пол страхователя:</label>
-    <select id="gender" name="gender" required>
-      <option value="мужчина">Мужчина</option>
-      <option value="женщина">Женщина</option>
-    </select>
-    <br>
-    <input type="submit" value="Заполнить полис">
+  <form id="form">
+    <div>
+      <label for="name">ФИО</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+      <h2>Паспортные данные</h2>
+      <div>
+        <label for="passportSeries">Серия</label>
+        <input type="text" id="passportSeries" name="passportSeries" required>
+      </div>
+      <div>
+        <label for="passportNumber">Номер</label>
+        <input type="text" id="passportNumber" name="passportNumber" required>
+      </div>
+      <div>
+        <label for="passportIssuedBy">Кем выдан</label>
+        <input type="text" id="passportIssuedBy" name="passportIssuedBy" required>
+      </div>
+      <div>
+        <label for="passportIssuedDate">Когда выдан</label>
+        <input type="date" id="passportIssuedDate" name="passportIssuedDate" required>
+      </div>
+    </div>
+    <div>
+      <label for="birthDate">Дата рождения</label>
+      <input type="date" id="birthDate" name="birthDate" required>
+    </div>
+    <div>
+      <label for="address">Адрес объекта</label>
+      <input type="text" id="address" name="address" required>
+    </div>
+    <div>
+      <label for="remainingMortgageSum">Оставшаяся сумма ипотеки</label>
+      <input type="number" id="remainingMortgageSum" name="remainingMortgageSum" required>
+    </div>
+    <div>
+      <label for="termRepayment">Оставшийся срок кредита</label>
+      <input type="number" id="termRepayment" name="termRepayment" required>
+    </div>
+    <div>
+      <label for="housingType">Тип жилья</label>
+      <select id="housingType" name="housingType" required>
+        <option value="apartment">Квартира</option>
+        <option value="house">Дом</option>
+      </select>
+    </div>
+    <div>
+      <label for="cadastralNumber">Кадастровый номер</label>
+      <input type="text" id="cadastralNumber" name="cadastralNumber" required>
+    </div>
+    <div>
+      <label for="gender">Пол страхователя</label>
+      <select id="gender" name="gender" required>
+        <option value="male">Мужчина</option>
+        <option value="female">Женщина</option>
+      </select>
+        <div>
+      <button type="submit" id="submit-button">Подпись</button>
+    </div>
   </form>
-
+    </div>
+    <h2 id="calculation">Расчет суммы страхования</h2>
+    <div>
+      <label for="insuranceSum">Сумма страхования</label>
+      <input type="number" id="insuranceSum" name="insuranceSum" disabled>
+    </div>
+    <div>
+      <label for="insurancePremium">Страховая премия</label>
+      <input type="number" id="insurancePremium" name="insurancePremium" disabled>
+    </div>
+  </form>
   <script>
-    const form = document.getElementById('policy-form');
+    // Получение элементов формы
+    const form = document.getElementById('form');
+    const nameInput = document.getElementById('name');
+    const passportSeriesInput = document.getElementById('passportSeries');
+    const passportNumberInput = document.getElementById('passportNumber');
+    const passportIssuedByInput = document.getElementById('passportIssuedBy');
+    const passportIssuedDateInput = document.getElementById('passportIssuedDate');
+    const birthDateInput = document.getElementById('birthDate');
+    const addressInput = document.getElementById('address');
+    const remainingMortgageSumInput = document.getElementById('remainingMortgageSum');
+    const termRepaymentInput = document.getElementById('termRepayment');
+    const housingTypeSelect = document.getElementById('housingType');
+    const cadastralNumberInput = document.getElementById('cadastralNumber');
+    const genderSelect = document.getElementById('gender');
+    const submitButton = document.getElementById('submit-button');
 
+    // Получение элементов расчета
+    const insuranceSumInput = document.getElementById('insuranceSum');
+    const insurancePremiumInput = document.getElementById('insurancePremium');
+
+    //Обработчик события отправки формы
     form.addEventListener('submit', (event) => {
       event.preventDefault();
 
-      const data = new FormData(form);
+      // Проверка на заполнение формы
+      if (!validateForm()) {
+        alert('Пожалуйста, заполните все поля формы.');
+        return;
+      }
 
-      fetch('submit_policy.php', {
-        method: 'POST',
-        body: data
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Перенаправить пользователя на страницу подтверждения
-          window.location.href = 'confirmation.php';
-        } else {
-          // Вывести сообщение об ошибке
-          alert(data.error);
-        }
-      })
-      .catch(error => {
-        // Вывести сообщение об ошибке
-        alert(error);
-      });
+      // Получение данных из формы
+      const data = {
+        name: nameInput.value,
+        passportSeries: passportSeriesInput.value,
+        passportNumber: passportNumberInput.value,
+        passportIssuedBy: passportIssuedByInput.value,
+        passportIssuedDate: passportIssuedDateInput.value,
+        birthDate: birthDateInput.value,
+        address: addressInput.value,
+        remainingMortgageSum: remainingMortgageSumInput.value,
+        termRepayment: termRepaymentInput.value,
+        housingType: housingTypeSelect.value,
+        cadastralNumber: cadastralNumberInput.value,
+        gender: genderSelect.value
+      };
+
+      // Расчет суммы страхования
+      const insuranceSum = calculateInsuranceSum(data);
+      insuranceSumInput.value = insuranceSum;
+
+      // Расчет страховой премии
+      const insurancePremium = calculateInsurancePremium(data, insuranceSum);
+      insurancePremiumInput.value = insurancePremium;
     });
+
+    // Функция проверки заполнения формы
+    function validateForm() {
+      return nameInput.value &&
+        passportSeriesInput.value &&
+        passportNumberInput.value &&
+        passportIssuedByInput.value &&
+        passportIssuedDateInput.value &&
+        birthDateInput.value &&
+        addressInput.value &&
+        remainingMortgageSumInput.value &&
+        termRepaymentInput.value &&
+        housingTypeSelect.value &&
+        cadastralNumberInput.value &&
+        genderSelect.value;
+    }
+
+    // Функция расчета суммы страхования
+    function calculateInsuranceSum(data) {
+      let sum = data.remainingMortgageSum;
+
+      if (data.housingType === 'house') {
+        sum *= 1.2;
+      }
+
+      return sum;
+    }
+
+    // Функция расчета страховой премии
+    function calculateInsurancePremium(data, insuranceSum) {
+      let premium = insuranceSum * 0.01;
+
+      if (data.gender === 'female') {
+        premium *= 0.9;
+      }
+
+      return premium;
+    }
   </script>
 </body>
 </html>
