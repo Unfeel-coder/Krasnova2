@@ -21,14 +21,14 @@
       <input type="date" id="incident-date">
     </div>
     <div>
-      <button type="button" id="submit-button">Проверить</button>
+      <button type="button" id="submit-button" onclick="checkDate()">Проверить</button>
     </div>
   </form>
   <div id="result"></div>
 
-  <!-- Скрипт проверки даты, обернутый в анонимную функцию IIFE -->
   <script>
-    (function() {
+    function checkDate() {
+      // Получаем введенные пользователем даты
       const contractDate = new Date(document.getElementById("contract-date").value);
       const incidentDate = new Date(document.getElementById("incident-date").value);
 
@@ -47,7 +47,7 @@
 
       // Если все проверки пройдены, выводим сообщение "Полис проверен"
       document.getElementById("result").innerHTML = "Полис проверен";
-    })();
+    }
   </script>
 </body>
 </html>
